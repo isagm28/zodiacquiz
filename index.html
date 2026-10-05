@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Kind of Student & Social Media User Are You? | Interactive Quiz</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- html2pdf.js for clean PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        buzz: '#FF0055',
+                        fire: { DEFAULT: '#FF4757', light: '#FFE5E8', dark: '#D63031' },
+                        social: { DEFAULT: '#2ED573', light: '#E3FCEC', dark: '#26AF5F' },
+                        creative: { DEFAULT: '#1E90FF', light: '#E0F0FF', dark: '#0066CC' },
+                        thinker: { DEFAULT: '#FFA502', light: '#FFF4E0', dark: '#E08B00' },
+                    },
+                    boxShadow: {
+                        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02)',
+                        'hover': '0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.03)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+            min-height: 100vh;
+        }
+
+        .option-card {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .option-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .option-card.selected {
+            border-color: #FF0055 !important;
+            background-color: #FFF0F5 !important;
+            box-shadow: 0 0 0 3px rgba(255, 0, 85, 0.2);
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-buzz selection:text-white">
+
+    <!-- Sticky Navigation Header with Progress Bar -->
+    <header class="glass-nav fixed top-0 left-0 right-0 z-50 border-b border-slate-200/80 px-4 py-3 shadow-sm">
+        <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
+            <div class="flex items-center gap-2.5">
+                <span class="bg-buzz text-white font-display font-black text-xs px-2.5 py-1 rounded-md uppercase tracking-wider shadow-sm">Quiz</span>
+                <h1 class="font-display font-bold text-slate-900 text-sm md:text-base truncate">Student & Social Media Persona</h1>
+            </div>
+            
+            <div class="flex items-center gap-3 min-w-[140px] sm:min-w-[200px]">
+                <div class="flex-1 bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="bg-gradient-to-r from-buzz via-pink-500 to-purple-500 h-full w-0 transition-all duration-300 ease-out"></div>
+                </div>
+                <span id="progress-text" class="text-xs font-bold text-slate-600 min-w-[38px] text-right">0%</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN APP CONTAINER -->
+    <main class="max-w-3xl mx-auto px-4 pt-24 pb-16">
+
+        <!-- WELCOME SCREEN -->
+        <div id="welcome-view" class="bg-white rounded-3xl p-6 sm:p-10 shadow-card border border-slate-100 text-center animate-fade-in">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-pink-100 text-buzz rounded-3xl mb-6 shadow-inner transform rotate-3 hover:rotate-0 transition-transform">
+                <i class="fa-solid fa-bolt text-4xl"></i>
+            </div>
+            <h1 class="font-display font-black text-3xl sm:text-4xl lg:text-5xl text-slate-900 mb-4 leading-tight">
+                What Kind of Student & Social Media User Are You?
+            </h1>
+            <p class="text-slate-600 text-base sm:text-lg mb-8 max-w-xl mx-auto leading-relaxed">
+                Take this ultimate 2-step archetype test to discover your student personality, social media style, and exact Zodiac alignment!
+            </p>
+
+            <div class="bg-slate-50 rounded-2xl p-5 mb-8 border border-slate-200/70 text-left max-w-lg mx-auto space-y-2">
+                <h3 class="font-display font-bold text-slate-800 text-xs uppercase tracking-wider mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-lightbulb text-amber-500"></i> How it works:
+                </h3>
+                <div class="flex items-start gap-3 text-sm text-slate-600">
+                    <span class="w-5 h-5 rounded-full bg-pink-100 text-buzz font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                    <span>Answer 17 quick questions to discover your dominant element (Fire, Air, Water, or Earth).</span>
+                </div>
+                <div class="flex items-start gap-3 text-sm text-slate-600">
+                    <span class="w-5 h-5 rounded-full bg-pink-100 text-buzz font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                    <span>Answer 4 sub-questions to reveal your exact Zodiac Sign and full detailed personality report.</span>
+                </div>
+            </div>
+
+            <button onclick="quizApp.startQuiz()" class="w-full sm:w-auto px-8 py-4 bg-buzz hover:bg-pink-600 text-white font-display font-bold text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0">
+                Start the Test <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+
+        <!-- QUIZ VIEW (STEP 1 & STEP 2) -->
+        <div id="quiz-view" class="hidden">
+            <div class="mb-4 flex items-center justify-between">
+                <span id="step-badge" class="bg-slate-900 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-sm">
+                    Step 1 of 2
+                </span>
+                <span id="question-counter" class="text-xs font-semibold text-slate-500">
+                    Question 1 of 17
+                </span>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-card border border-slate-100 animate-slide-up mb-6">
+                <h2 id="question-text" class="font-display font-bold text-xl sm:text-2xl text-slate-900 mb-6 leading-snug">
+                    <!-- Dynamic Question -->
+                </h2>
+
+                <div id="options-container" class="space-y-3.5">
+                    <!-- Dynamic Option Buttons -->
+                </div>
+            </div>
+
+            <!-- Quiz Controls -->
+            <div class="flex items-center justify-between gap-4">
+                <button id="prev-btn" onclick="quizApp.prevQuestion()" class="px-5 py-3 text-slate-600 hover:text-slate-900 font-semibold text-sm rounded-xl transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                    <i class="fa-solid fa-arrow-left mr-1.5"></i> Previous
+                </button>
+                <button id="next-btn" onclick="quizApp.nextQuestion()" disabled class="px-7 py-3 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-300 text-white font-bold text-sm rounded-xl shadow-md transition-all disabled:cursor-not-allowed">
+                    Next Question <i class="fa-solid fa-arrow-right ml-1.5"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 2 TRANSITION SCREEN -->
+        <div id="step2-intro-view" class="hidden bg-white rounded-3xl p-8 sm:p-10 shadow-card border border-slate-100 text-center animate-fade-in">
+            <div id="element-badge-icon" class="w-20 h-20 mx-auto rounded-3xl flex items-center justify-center text-4xl mb-6 shadow-inner bg-slate-100">
+                🔥
+            </div>
+            <span class="text-xs font-black uppercase tracking-widest text-buzz mb-2 block">Step 1 Complete!</span>
+            <h2 id="step2-title" class="font-display font-black text-2xl sm:text-3xl text-slate-900 mb-3">
+                You are a FIRE TYPE!
+            </h2>
+            <p id="step2-description" class="text-slate-600 text-base mb-8 max-w-md mx-auto">
+                Now answer 4 final sub-questions to reveal your exact Zodiac Sign and unlock your detailed profile report.
+            </p>
+            <button onclick="quizApp.startStep2()" class="w-full sm:w-auto px-8 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-base rounded-2xl shadow-lg transition-all">
+                Continue to Step 2 <i class="fa-solid fa-sparkles ml-2"></i>
+            </button>
+        </div>
+
+        <!-- FINAL RESULTS VIEW -->
+        <div id="result-view" class="hidden space-y-6 animate-slide-up">
+            
+            <!-- Exportable PDF Wrapper -->
+            <div id="pdf-export-container" class="bg-white rounded-3xl p-6 sm:p-10 shadow-card border border-slate-100 relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-3 bg-gradient-to-r from-buzz via-purple-500 to-indigo-500"></div>
+
+                <div class="text-center mb-8 pt-2">
+                    <span class="bg-pink-100 text-buzz font-extrabold text-xs uppercase px-3 py-1 rounded-full tracking-wider">Official Report</span>
+                    <h2 class="font-display font-black text-3xl sm:text-4xl text-slate-900 mt-3 mb-1">Your Personality Profile</h2>
+                    <p class="text-slate-500 text-xs sm:text-sm">Student & Social Media Persona Quiz</p>
+                </div>
+
+                <!-- Primary Element Archetype Summary -->
+                <div id="archetype-card" class="rounded-2xl p-6 mb-8 border transition-all">
+                    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+                        <div id="result-emoji" class="text-5xl sm:text-6xl p-4 bg-white/90 rounded-2xl shadow-sm border border-slate-200/60 flex-shrink-0">
+                            🔥
+                        </div>
+                        <div class="text-center sm:text-left flex-1">
+                            <span id="result-element-tag" class="text-xs font-black uppercase tracking-widest px-2.5 py-1 rounded-md bg-white/90 text-slate-800 mb-2 inline-block shadow-sm">
+                                Primary Archetype
+                            </span>
+                            <h3 id="result-title" class="font-display font-black text-2xl sm:text-3xl text-slate-900 mb-1">
+                                THE FIRE TYPE
+                            </h3>
+                            <p id="result-motto" class="font-display font-bold text-buzz text-base sm:text-lg italic mb-3">
+                                "Let's try it!"
+                            </p>
+                            <p id="result-description" class="text-slate-700 text-sm leading-relaxed mb-4">
+                                Description text...
+                            </p>
+                            <div class="bg-white/80 p-3.5 rounded-xl border border-slate-200/60 text-xs text-slate-700">
+                                <strong class="text-slate-900 block mb-0.5">⚠️ Possible Weakness:</strong>
+                                <span id="result-weakness">Weakness text...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROMINENT ZODIAC SIGN & FULL DESCRIPTION FROM DOCUMENT 6 -->
+                <div class="bg-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-md">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-5">
+                        <div class="flex items-center gap-3">
+                            <span id="zodiac-symbol" class="text-3xl sm:text-4xl">♈</span>
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">Exact Zodiac Match</span>
+                                <h4 id="zodiac-title" class="font-display font-black text-xl sm:text-2xl text-white">
+                                    Aries — The Adventurer
+                                </h4>
+                            </div>
+                        </div>
+                      
+                    </div>
+
+                    <!-- Detailed Sign Description Paragraphs -->
+                    <div id="zodiac-full-description" class="text-slate-300 text-sm leading-relaxed space-y-3">
+                        <!-- Fully injected description from Document 6 -->
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs text-slate-400 pt-6 mt-6 border-t border-slate-100">
+                    <span>Student Quiz Certificate • BuzzFeed Edition</span>
+                    <span id="export-date">Issued: 2026</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+                <button onclick="quizApp.exportPDF()" class="w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-display font-bold text-base rounded-2xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-file-pdf text-xl"></i> Export Certificate as PDF
+                </button>
+                <button onclick="quizApp.resetQuiz()" class="w-full sm:w-auto px-8 py-4 bg-slate-200 hover:bg-slate-300 text-slate-800 font-display font-bold text-base rounded-2xl transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i> Retake Quiz
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Data Store containing Document 5 Questions and Document 6 Descriptions
+        const QUIZ_DATA = {
+            generalQuestions: [
+                {
+                    q: "1. You have a big test tomorrow. What do you do?",
+                    options: [
+                        { text: "I make a plan and start studying immediately.", type: "A" },
+                        { text: "I study with friends and try to make it fun.", type: "B" },
+                        { text: "I study at the last minute, but somehow I manage.", type: "C" },
+                        { text: "I relax first. Stress won't help me!", type: "D" }
+                    ]
+                },
+                {
+                    q: "2. Your teacher says: \"You have to give a presentation.\"",
+                    options: [
+                        { text: "Great! I don't mind speaking in front of people.", type: "A" },
+                        { text: "I'm nervous, but I'll practise a lot.", type: "B" },
+                        { text: "Can I do it with a friend?", type: "C" },
+                        { text: "I'll improvise. It will probably be fine!", type: "D" }
+                    ]
+                },
+                {
+                    q: "3. Someone posts an embarrassing photo of you.",
+                    options: [
+                        { text: "I ask them to delete it immediately.", type: "A" },
+                        { text: "I laugh and share it myself.", type: "B" },
+                        { text: "I pretend I don't care, but I definitely care.", type: "C" },
+                        { text: "I don't really worry about what people think.", type: "D" }
+                    ]
+                },
+                {
+                    q: "4. In a group project, you usually...",
+                    options: [
+                        { text: "Become the leader.", type: "A" },
+                        { text: "Make sure everyone gets along.", type: "B" },
+                        { text: "Come up with creative ideas.", type: "C" },
+                        { text: "Quietly do your part and help when necessary.", type: "D" }
+                    ]
+                },
+                {
+                    q: "5. Your favourite type of social media content is...",
+                    options: [
+                        { text: "Sport, challenges and exciting videos.", type: "A" },
+                        { text: "Funny videos and things I can share with friends.", type: "B" },
+                        { text: "Music, art, fashion or creative content.", type: "C" },
+                        { text: "Interesting information, tutorials or things I can learn from.", type: "D" }
+                    ]
+                },
+                {
+                    q: "6. Your friend gets a better mark than you.",
+                    options: [
+                        { text: "\"Next time, I'll beat you!\"", type: "A" },
+                        { text: "\"Well done!\" I'm genuinely happy for them.", type: "B" },
+                        { text: "\"How did you get that mark?\" I want to understand.", type: "C" },
+                        { text: "\"Okay... I'll try harder next time.\"", type: "D" }
+                    ]
+                },
+                {
+                    q: "7. How do you react when someone criticises you online?",
+                    options: [
+                        { text: "I defend myself.", type: "A" },
+                        { text: "I ignore it.", type: "B" },
+                        { text: "I think about whether they are right.", type: "C" },
+                        { text: "It can really affect my mood.", type: "D" }
+                    ]
+                },
+                {
+                    q: "8. Your ideal Saturday is...",
+                    options: [
+                        { text: "Going somewhere exciting with friends.", type: "A" },
+                        { text: "Having a relaxed day with people I like.", type: "B" },
+                        { text: "Doing something creative or discovering something new.", type: "C" },
+                        { text: "Staying home, gaming, watching things or doing my hobbies.", type: "D" }
+                    ]
+                },
+                {
+                    q: "9. If you don't understand something in class...",
+                    options: [
+                        { text: "I ask the teacher immediately.", type: "A" },
+                        { text: "I ask a friend.", type: "B" },
+                        { text: "I search for it online.", type: "C" },
+                        { text: "I try to work it out myself first.", type: "D" }
+                    ]
+                },
+                {
+                    q: "10. Someone sends you a message but doesn't reply to your answer for six hours.",
+                    options: [
+                        { text: "I send another message: “Hello??”", type: "A" },
+                        { text: "I don't care. They'll reply when they can.", type: "B" },
+                        { text: "I start wondering why they haven't replied.", type: "C" },
+                        { text: "I probably forget about the conversation.", type: "D" }
+                    ]
+                },
+                {
+                    q: "11. Which sentence sounds most like you?",
+                    options: [
+                        { text: "“Let's do it!”", type: "A" },
+                        { text: "“Let's do it together!”", type: "B" },
+                        { text: "“Let's do it differently!”", type: "C" },
+                        { text: "“Let's think about it first.”", type: "D" }
+                    ]
+                },
+                {
+                    q: "12. When you get a new phone, the first thing you do is...",
+                    options: [
+                        { text: "Test the camera and new features.", type: "A" },
+                        { text: "Message your friends.", type: "B" },
+                        { text: "Personalise everything and choose the perfect wallpaper.", type: "C" },
+                        { text: "Explore the settings and see what it can do.", type: "D" }
+                    ]
+                },
+                {
+                    q: "13. You see a viral challenge online. You...",
+                    options: [
+                        { text: "Want to try it immediately.", type: "A" },
+                        { text: "Send it to your friends.", type: "B" },
+                        { text: "Think about how you could make your own version.", type: "C" },
+                        { text: "Ask yourself why everyone is doing it.", type: "D" }
+                    ]
+                },
+                {
+                    q: "14. When you make a mistake in English...",
+                    options: [
+                        { text: "I keep speaking. Mistakes don't stop me.", type: "A" },
+                        { text: "I laugh and keep going.", type: "B" },
+                        { text: "I want to know exactly what I did wrong.", type: "C" },
+                        { text: "I sometimes stop speaking because I'm afraid of making another mistake.", type: "D" }
+                    ]
+                },
+                {
+                    q: "15. Your friends would probably describe you as...",
+                    options: [
+                        { text: "Confident and energetic.", type: "A" },
+                        { text: "Friendly and funny.", type: "B" },
+                        { text: "Creative and curious.", type: "C" },
+                        { text: "Calm and thoughtful.", type: "D" }
+                    ]
+                },
+                {
+                    q: "16. When you're bored in class, you...",
+                    options: [
+                        { text: "Start talking to someone.", type: "A" },
+                        { text: "Make jokes with your friends.", type: "B" },
+                        { text: "Draw, write or imagine things.", type: "C" },
+                        { text: "Daydream quietly.", type: "D" }
+                    ]
+                },
+                {
+                    q: "17. What is most important to you on social media?",
+                    options: [
+                        { text: "Having fun and being noticed.", type: "A" },
+                        { text: "Connecting with people.", type: "B" },
+                        { text: "Expressing myself.", type: "C" },
+                        { text: "Finding interesting things.", type: "D" }
+                    ]
+                }
+            ],
+
+            archetypes: {
+                A: {
+                    title: "THE FIRE TYPE",
+                    emoji: "🔥",
+                    motto: "“Let's try it!”",
+                    bgClass: "bg-red-50 border-red-200 text-red-900",
+                    description: "You are probably energetic, confident, spontaneous and adventurous. As a student, you like action and don't want to spend too long thinking before doing something. You may enjoy speaking because you aren't too afraid of making mistakes. On social media, you probably like fun, challenges, trends and exciting content.",
+                    weakness: "You can sometimes act before thinking!"
+                },
+                B: {
+                    title: "THE SOCIAL TYPE",
+                    emoji: "🤝",
+                    motto: "“Let's do it together!”",
+                    bgClass: "bg-emerald-50 border-emerald-200 text-emerald-900",
+                    description: "You are probably friendly, communicative, sociable and curious about other people. As a student, you often enjoy working with classmates and sharing ideas. You may learn particularly well when you can discuss things with other people. On social media, you probably enjoy messages, comments, funny content and sharing things with friends.",
+                    weakness: "You can sometimes get distracted by other people!"
+                },
+                C: {
+                    title: "THE CREATIVE TYPE",
+                    emoji: "🌊",
+                    motto: "“Let's do it differently!”",
+                    bgClass: "bg-blue-50 border-blue-200 text-blue-900",
+                    description: "You are probably creative, imaginative, sensitive and curious. As a student, you may enjoy projects where you can express yourself rather than simply memorising information. On social media, you probably like music, art, fashion, stories and creative content.",
+                    weakness: "You may sometimes think too much about what other people think of you."
+                },
+                D: {
+                    title: "THE THINKER TYPE",
+                    emoji: "🌱",
+                    motto: "“Let's think about it first.”",
+                    bgClass: "bg-amber-50 border-amber-200 text-amber-900",
+                    description: "You are probably calm, thoughtful, independent and responsible. As a student, you may prefer to understand something properly before answering. You don't necessarily need to be the loudest person in the room to have good ideas. On social media, you may prefer useful, interesting or informative content rather than following every trend.",
+                    weakness: "You may sometimes overthink things or be too careful."
+                }
+            },
+
+            // Step 2 Modules based on primary element
+            step2Modules: {
+                A: {
+                    name: "FIRE",
+                    title: "🔥 FIRE: Aries, Leo or Sagittarius",
+                    signs: { A: "Aries", B: "Leo", C: "Sagittarius" },
+                    questions: [
+                        {
+                            q: "1. In a group, I usually...",
+                            options: [
+                                { text: "Take the lead and tell everyone, “Let's go!”", type: "A" },
+                                { text: "Try to make everyone notice and appreciate the group.", type: "B" },
+                                { text: "Suggest something completely new and exciting.", type: "C" }
+                            ]
+                        },
+                        {
+                            q: "2. If someone challenges me...",
+                            options: [
+                                { text: "I want to win!", type: "A" },
+                                { text: "I want to prove that I can do it.", type: "B" },
+                                { text: "I think, “This could be fun!”", type: "C" }
+                            ]
+                        },
+                        {
+                            q: "3. My biggest strength is...",
+                            options: [
+                                { text: "My courage.", type: "A" },
+                                { text: "My confidence.", type: "B" },
+                                { text: "My optimism.", type: "C" }
+                            ]
+                        },
+                        {
+                            q: "4. My possible weakness is...",
+                            options: [
+                                { text: "I can be impatient.", type: "A" },
+                                { text: "I sometimes want too much attention.", type: "B" },
+                                { text: "I can be careless.", type: "C" }
+                            ]
+                        }
+                    ]
+                },
+                D: {
+                    name: "EARTH",
+                    title: "🌱 EARTH: Taurus, Virgo or Capricorn",
+                    signs: { A: "Taurus", B: "Virgo", C: "Capricorn" },
+                    questions: [
+                        {
+                            q: "1. At school, I am usually...",
+                            options: [
+                                { text: "Calm and patient.", type: "A" },
+                                { text: "Organised and careful.", type: "B" },
+                                { text: "Ambitious and hardworking.", type: "C" }
+                            ]
+                        },
+                        {
+                            q: "2. When something is difficult...",
+                            options: [
+                                { text: "I don't give up easily.", type: "A" },
+                                { text: "I look carefully for my mistakes.", type: "B" },
+                                { text: "I keep working until I achieve my goal.", type: "C" }
+                            ]
+                        },
+                        {
+                            q: "3. My biggest strength is...",
+                            options: [
+                                { text: "My loyalty.", type: "A" },
+                                { text: "My attention to detail.", type: "B" },
+                                { text: "My determination.", type: "C" }
+                            ]
+                        },
+                        {
+                            q: "4. My possible weakness is...",
+                            options: [
+                                { text: "I can be stubborn.", type: "A" },
+                                { text: "I can be too critical.", type: "B" },
+                                { text: "I can take things too seriously.", type: "C" }
+                            ]
+                        }
+                    ]
+                },
+                B: {
+                    name: "AIR",
+                    title: "🌬️ AIR: Gemini, Libra or Aquarius",
+                    signs: { A: "Gemini", B: "Libra", C: "Aquarius" },
+                    questions: [
+                        {
+                            q: "1. In a conversation, I...",
+                            options: [
+                                { text: "Always have something to say.", type: "A" },
+                                { text: "Try to make sure everyone gets along.", type: "B" },
+                                { text: "Like discussing unusual ideas.", type: "C" }
+                            ]
+                        },
+                        {
+                            q: "2. My ideal social media content is...",
+                            options: [
+                                { text: "Funny, entertaining and varied.", type: "A" },
+                                { text: "Fashion, lifestyle and things I can share with friends.", type: "B" },
+                                { text: "Interesting ideas, news or unusual topics.", type: "C" }
+                            ]
+                        },
+                        {
+                            q: "3. My biggest strength is...",
+                            options: [
+                                { text: "My communication skills.", type: "A" },
+                                { text: "My ability to understand different sides.", type: "B" },
+                                { text: "My originality.", type: "C" }
+                            ]
+                        },
+                        {
+                            q: "4. My possible weakness is...",
+                            options: [
+                                { text: "I can get distracted easily.", type: "A" },
+                                { text: "I can have difficulty making decisions.", type: "B" },
+                                { text: "I can sometimes seem distant.", type: "C" }
+                            ]
+                        }
+                    ]
+                },
+                C: {
+                    name: "WATER",
+                    title: "🌊 WATER: Cancer, Scorpio or Pisces",
+                    signs: { A: "Cancer", B: "Scorpio", C: "Pisces" },
+                    questions: [
+                        {
+                            q: "1. When a friend has a problem...",
+                            options: [
+                                { text: "I try to make them feel safe and supported.", type: "A" },
+                                { text: "I protect them and take their side.", type: "B" },
+                                { text: "I really try to understand how they feel.", type: "C" }
+                            ]
+                        },
+                        {
+                            q: "2. I am most interested in...",
+                            options: [
+                                { text: "My friends, family and memories.", type: "A" },
+                                { text: "Secrets, mysteries and deep conversations.", type: "B" },
+                                { text: "Music, art, stories and imagination.", type: "C" }
+                            ]
+                        },
+                        {
+                            q: "3. My biggest strength is...",
+                            options: [
+                                { text: "My caring personality.", type: "A" },
+                                { text: "My determination.", type: "B" },
+                                { text: "My imagination.", type: "C" }
+                            ]
+                        },
+                        {
+                            q: "4. My possible weakness is...",
+                            options: [
+                                { text: "I can be quite sensitive.", type: "A" },
+                                { text: "I can be jealous or stubborn.", type: "B" },
+                                { text: "I can be dreamy or easily distracted.", type: "C" }
+                            ]
+                        }
+                    ]
+                }
+            },
+
+            // FULL DETAILED ZODIAC DESCRIPTIONS FROM DOCUMENT 6
+            zodiacDescriptions: {
+                "Aries": {
+                    title: "Aries — The Adventurer",
+                    symbol: "♈",
+                    paragraphs: [
+                        "Aries are often energetic, brave, confident and adventurous. They like taking action and are usually not afraid to try something new. They can be enthusiastic leaders who motivate other people. Aries people often enjoy competition and like to be the first to do something.",
+                        "However, they can sometimes be impatient, impulsive or a little bossy. They may act before they have thought about the consequences. Their confidence can be a great strength, but sometimes they need to remember to listen to other people."
+                    ]
+                },
+                "Taurus": {
+                    title: "Taurus — The Reliable One",
+                    symbol: "♉",
+                    paragraphs: [
+                        "Taurus people are usually patient, loyal, calm and reliable. They like feeling comfortable and safe, and they don't usually give up easily when something is difficult. As friends, they can be very loyal and supportive. They often know what they like and aren't easily influenced by other people.",
+                        "On the other hand, Taurus can sometimes be stubborn, possessive or resistant to change. Once they have made a decision, it can be difficult to convince them to change their minds!"
+                    ]
+                },
+                "Gemini": {
+                    title: "Gemini — The Communicator",
+                    symbol: "♊",
+                    paragraphs: [
+                        "Geminis are often curious, sociable, intelligent and talkative. They love discovering new ideas and talking to different people. They can be excellent communicators and often have a good sense of humour. They usually enjoy variety and don't like doing the same thing for too long.",
+                        "However, they can sometimes be restless, distracted or unpredictable. They may start many things without finishing them, especially when something more interesting appears!"
+                    ]
+                },
+                "Cancer": {
+                    title: "Cancer — The Caring One",
+                    symbol: "♋",
+                    paragraphs: [
+                        "Cancer people are often kind, caring, sensitive and loyal. They care deeply about their friends and family and are usually good at noticing how other people feel. They can be very supportive when someone has a problem. They often have a strong imagination and enjoy places where they feel comfortable and safe.",
+                        "However, they can sometimes be moody, sensitive or overly emotional. They may take criticism personally, even when someone doesn't intend to hurt them."
+                    ]
+                },
+                "Leo": {
+                    title: "Leo — The Star",
+                    symbol: "♌",
+                    paragraphs: [
+                        "Leos are usually confident, enthusiastic, generous and charismatic. They often enjoy being around people and aren't afraid of being noticed. They can be natural leaders and are good at encouraging others. Leos often have a strong sense of humour and enjoy having fun.",
+                        "However, they can sometimes be dramatic, proud or attention-seeking. They may want to be the centre of attention and can find it difficult when someone else gets all the praise."
+                    ]
+                },
+                "Virgo": {
+                    title: "Virgo — The Perfectionist",
+                    symbol: "♍",
+                    paragraphs: [
+                        "Virgos are often intelligent, organised, practical and hardworking. They like doing things properly and can be excellent at solving problems. They usually notice details that other people miss and can be very responsible students. They are often happy to help others improve.",
+                        "However, they can sometimes be overcritical, worried or perfectionist. They may focus so much on mistakes that they forget to notice everything they have done well."
+                    ]
+                },
+                "Libra": {
+                    title: "Libra — The Peacemaker",
+                    symbol: "♎",
+                    paragraphs: [
+                        "Libras are usually friendly, diplomatic, charming and sociable. They enjoy spending time with other people and often try to keep everyone happy. They are good at seeing different sides of an argument and usually dislike unnecessary conflict. Libras often have a strong sense of style and enjoy beautiful or creative things.",
+                        "However, they can sometimes be indecisive, people-pleasing or easily influenced. They may spend a long time choosing because they don't want to make the wrong decision."
+                    ]
+                },
+                "Scorpio": {
+                    title: "Scorpio — The Intense One",
+                    symbol: "♏",
+                    paragraphs: [
+                        "Scorpios are often determined, passionate, brave and mysterious. When they really want something, they can work incredibly hard to achieve it. They are usually loyal to people they trust and can be very protective of their friends. They often have strong opinions and don't give up easily.",
+                        "However, they can sometimes be jealous, secretive or stubborn. They may find it difficult to forgive someone who has seriously disappointed them."
+                    ]
+                },
+                "Sagittarius": {
+                    title: "Sagittarius — The Explorer",
+                    symbol: "♐",
+                    paragraphs: [
+                        "Sagittarius people are often optimistic, adventurous, funny and independent. They love discovering new places, ideas and experiences. They usually have a positive attitude and can make other people laugh. They don't like feeling controlled and often enjoy having freedom.",
+                        "However, they can sometimes be careless, impatient or too honest. They may say exactly what they think without considering whether someone might be offended!"
+                    ]
+                },
+                "Capricorn": {
+                    title: "Capricorn — The Achiever",
+                    symbol: "♑",
+                    paragraphs: [
+                        "Capricorns are usually responsible, ambitious, disciplined and determined. They often set themselves goals and work hard to achieve them. They can be very dependable and don't usually give up when something is difficult. They may seem serious, but they often have a good sense of humour with people they trust.",
+                        "However, they can sometimes be serious, stubborn or overly focused on success. They may put too much pressure on themselves."
+                    ]
+                },
+                "Aquarius": {
+                    title: "Aquarius — The Original",
+                    symbol: "♒",
+                    paragraphs: [
+                        "Aquarians are often independent, creative, intelligent and original. They like thinking differently and aren't afraid to have unusual ideas. They often care about important social issues and enjoy discussing new possibilities. They don't necessarily follow the crowd and usually want to be themselves.",
+                        "However, they can sometimes be unpredictable, distant or rebellious. They may dislike rules simply because they are rules!"
+                    ]
+                },
+                "Pisces": {
+                    title: "Pisces — The Dreamer",
+                    symbol: "♓",
+                    paragraphs: [
+                        "Pisces people are often imaginative, creative, kind and empathetic. They have a rich imagination and can be very understanding when someone has a problem. They often enjoy music, art, stories and other creative activities. Pisces can be excellent listeners and very supportive friends.",
+                        "However, they can sometimes be dreamy, emotional or easily distracted. They may sometimes escape into their imagination instead of dealing with a difficult situation."
+                    ]
+                }
+            }
+        };
+
+        class QuizApp {
+            constructor() {
+                this.currentStep = 1;
+                this.currentQuestionIdx = 0;
+                this.step1Answers = [];
+                this.step2Answers = [];
+                this.dominantType = 'A';
+                this.exactSignName = "Aries";
+
+                // DOM Bindings
+                this.welcomeView = document.getElementById('welcome-view');
+                this.quizView = document.getElementById('quiz-view');
+                this.step2IntroView = document.getElementById('step2-intro-view');
+                this.resultView = document.getElementById('result-view');
+                
+                this.progressBar = document.getElementById('progress-bar');
+                this.progressText = document.getElementById('progress-text');
+                this.questionText = document.getElementById('question-text');
+                this.optionsContainer = document.getElementById('options-container');
+                this.stepBadge = document.getElementById('step-badge');
+                this.questionCounter = document.getElementById('question-counter');
+                this.prevBtn = document.getElementById('prev-btn');
+                this.nextBtn = document.getElementById('next-btn');
+            }
+
+            startQuiz() {
+                this.welcomeView.classList.add('hidden');
+                this.quizView.classList.remove('hidden');
+                this.currentStep = 1;
+                this.currentQuestionIdx = 0;
+                this.step1Answers = new Array(QUIZ_DATA.generalQuestions.length).fill(null);
+                this.renderQuestion();
+            }
+
+            renderQuestion() {
+                const currentQuestions = this.currentStep === 1 
+                    ? QUIZ_DATA.generalQuestions 
+                    : QUIZ_DATA.step2Modules[this.dominantType].questions;
+
+                const qData = currentQuestions[this.currentQuestionIdx];
+
+                // Progress Bar
+                let progressPercent = 0;
+                if (this.currentStep === 1) {
+                    progressPercent = Math.round(((this.currentQuestionIdx) / 21) * 100);
+                    this.stepBadge.textContent = "Step 1: Primary Archetype";
+                    this.questionCounter.textContent = `Question ${this.currentQuestionIdx + 1} of 17`;
+                } else {
+                    progressPercent = Math.round(((17 + this.currentQuestionIdx) / 21) * 100);
+                    this.stepBadge.textContent = "Step 2: Zodiac Sub-Quiz";
+                    this.questionCounter.textContent = `Question ${this.currentQuestionIdx + 1} of 4`;
+                }
+                
+                this.progressBar.style.width = `${progressPercent}%`;
+                this.progressText.textContent = `${progressPercent}%`;
+
+                // Question Title
+                this.questionText.textContent = qData.q;
+
+                // Render Options
+                this.optionsContainer.innerHTML = '';
+                const selectedAns = this.currentStep === 1 
+                    ? this.step1Answers[this.currentQuestionIdx]
+                    : this.step2Answers[this.currentQuestionIdx];
+
+                qData.options.forEach((opt, idx) => {
+                    const isSelected = selectedAns === opt.type;
+                    const letter = String.fromCharCode(65 + idx);
+
+                    const optBtn = document.createElement('button');
+                    optBtn.className = `option-card w-full text-left p-4 sm:p-5 rounded-2xl border-2 font-medium flex items-center gap-4 transition-all ${
+                        isSelected 
+                            ? 'selected border-buzz bg-pink-50/60 text-slate-900 shadow-sm' 
+                            : 'border-slate-200 hover:border-slate-300 bg-slate-50/50 text-slate-700'
+                    }`;
+
+                    optBtn.innerHTML = `
+                        <span class="w-8 h-8 rounded-xl flex items-center justify-center font-display font-bold text-sm ${
+                            isSelected ? 'bg-buzz text-white' : 'bg-slate-200 text-slate-700'
+                        }">${letter}</span>
+                        <span class="flex-1 text-sm sm:text-base">${opt.text}</span>
+                        ${isSelected ? '<i class="fa-solid fa-circle-check text-buzz text-xl"></i>' : ''}
+                    `;
+
+                    optBtn.onclick = () => this.selectOption(opt.type);
+                    this.optionsContainer.appendChild(optBtn);
+                });
+
+                // Prev/Next Navigation
+                this.prevBtn.disabled = (this.currentStep === 1 && this.currentQuestionIdx === 0);
+                this.nextBtn.disabled = (selectedAns === undefined || selectedAns === null);
+                
+                if (this.currentQuestionIdx === currentQuestions.length - 1) {
+                    this.nextBtn.innerHTML = this.currentStep === 1 
+                        ? 'Finish Step 1 <i class="fa-solid fa-arrow-right ml-1"></i>' 
+                        : 'See Final Results <i class="fa-solid fa-sparkles ml-1"></i>';
+                } else {
+                    this.nextBtn.innerHTML = 'Next Question <i class="fa-solid fa-arrow-right ml-1"></i>';
+                }
+            }
+
+            selectOption(type) {
+                if (this.currentStep === 1) {
+                    this.step1Answers[this.currentQuestionIdx] = type;
+                } else {
+                    this.step2Answers[this.currentQuestionIdx] = type;
+                }
+                this.renderQuestion();
+            }
+
+            nextQuestion() {
+                const currentQuestions = this.currentStep === 1 
+                    ? QUIZ_DATA.generalQuestions 
+                    : QUIZ_DATA.step2Modules[this.dominantType].questions;
+
+                if (this.currentQuestionIdx < currentQuestions.length - 1) {
+                    this.currentQuestionIdx++;
+                    this.renderQuestion();
+                } else {
+                    if (this.currentStep === 1) {
+                        this.processStep1Results();
+                    } else {
+                        this.processStep2Results();
+                    }
+                }
+            }
+
+            prevQuestion() {
+                if (this.currentQuestionIdx > 0) {
+                    this.currentQuestionIdx--;
+                    this.renderQuestion();
+                } else if (this.currentStep === 2) {
+                    this.currentStep = 1;
+                    this.currentQuestionIdx = QUIZ_DATA.generalQuestions.length - 1;
+                    this.renderQuestion();
+                }
+            }
+
+            processStep1Results() {
+                const counts = { A: 0, B: 0, C: 0, D: 0 };
+                this.step1Answers.forEach(ans => {
+                    if (counts[ans] !== undefined) counts[ans]++;
+                });
+
+                let maxCount = -1;
+                let dominant = 'A';
+                for (const key in counts) {
+                    if (counts[key] > maxCount) {
+                        maxCount = counts[key];
+                        dominant = key;
+                    }
+                }
+
+                this.dominantType = dominant;
+                const module = QUIZ_DATA.step2Modules[dominant];
+
+                document.getElementById('element-badge-icon').textContent = QUIZ_DATA.archetypes[dominant].emoji;
+                document.getElementById('step2-title').textContent = `You are ${QUIZ_DATA.archetypes[dominant].title}!`;
+                document.getElementById('step2-description').textContent = `Now answer 4 targeted sub-questions in the ${module.name} module to discover your exact Zodiac sign!`;
+
+                this.quizView.classList.add('hidden');
+                this.step2IntroView.classList.remove('hidden');
+            }
+
+            startStep2() {
+                this.step2IntroView.classList.add('hidden');
+                this.quizView.classList.remove('hidden');
+                this.currentStep = 2;
+                this.currentQuestionIdx = 0;
+                this.step2Answers = new Array(4).fill(null);
+                this.renderQuestion();
+            }
+
+            processStep2Results() {
+                const counts = { A: 0, B: 0, C: 0 };
+                this.step2Answers.forEach(ans => {
+                    if (counts[ans] !== undefined) counts[ans]++;
+                });
+
+                let maxCount = -1;
+                let dominantSignKey = 'A';
+                for (const key in counts) {
+                    if (counts[key] > maxCount) {
+                        maxCount = counts[key];
+                        dominantSignKey = key;
+                    }
+                }
+
+                const module = QUIZ_DATA.step2Modules[this.dominantType];
+                this.exactSignName = module.signs[dominantSignKey];
+
+                this.renderFinalResult();
+            }
+
+            renderFinalResult() {
+                this.quizView.classList.add('hidden');
+                this.resultView.classList.remove('hidden');
+
+                this.progressBar.style.width = '100%';
+                this.progressText.textContent = '100%';
+
+                const archetype = QUIZ_DATA.archetypes[this.dominantType];
+                const cardContainer = document.getElementById('archetype-card');
+                cardContainer.className = `rounded-2xl p-6 mb-8 border transition-all ${archetype.bgClass}`;
+
+                // Fill Primary Archetype
+                document.getElementById('result-emoji').textContent = archetype.emoji;
+                document.getElementById('result-title').textContent = archetype.title;
+                document.getElementById('result-motto').textContent = archetype.motto;
+                document.getElementById('result-description').textContent = archetype.description;
+                document.getElementById('result-weakness').textContent = archetype.weakness;
+
+                // Fill Document 6 Zodiac Data
+                const zodiacData = QUIZ_DATA.zodiacDescriptions[this.exactSignName];
+                document.getElementById('zodiac-symbol').textContent = zodiacData.symbol;
+                document.getElementById('zodiac-title').textContent = zodiacData.title;
+
+                const descContainer = document.getElementById('zodiac-full-description');
+                descContainer.innerHTML = '';
+                zodiacData.paragraphs.forEach(pText => {
+                    const p = document.createElement('p');
+                    p.textContent = pText;
+                    descContainer.appendChild(p);
+                });
+
+                const now = new Date();
+                document.getElementById('export-date').textContent = `Issued: ${now.toLocaleDateString()}`;
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            exportPDF() {
+                const element = document.getElementById('pdf-export-container');
+                const opt = {
+                    margin:       [0.4, 0.4, 0.4, 0.4],
+                    filename:     `Quiz_Result_${this.exactSignName}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true },
+                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+
+                html2pdf().set(opt).from(element).save();
+            }
+
+            resetQuiz() {
+                this.currentStep = 1;
+                this.currentQuestionIdx = 0;
+                this.step1Answers = [];
+                this.step2Answers = [];
+                
+                this.resultView.classList.add('hidden');
+                this.welcomeView.classList.remove('hidden');
+                
+                this.progressBar.style.width = '0%';
+                this.progressText.textContent = '0%';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // Initialize App on Window Load
+        let quizApp;
+        window.onload = function() {
+            quizApp = new QuizApp();
+        };
+    </script>
+</body>
+</html>
